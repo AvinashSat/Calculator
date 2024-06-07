@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>calc</title>
+
+    <style>
+        body {
+            display: flex;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #calc {
+            min-width: 200px;
+            padding: 10px;
+            width: 220px;
+            border-radius: 10px;
+            background-color: rgb(3, 3, 3);
+        }
+
+        input {
+            width: 96%;
+            height: 100px;
+            margin-bottom: 5px;
+            border-radius: 10px;
+            border-color: black;
+            border-style: solid;
+            background-color: black;
+            color: white;
+            text-align: end;
+        }
+
+        #keys {
+            display: grid;
+            gap: 5px;
+            max-width: 50px;
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        button {
+            width: 50px;
+            height: 50px;
+            border-style: solid;
+            border-color: rgb(25, 24, 24);
+            border-radius: 50px;
+            background-color: rgb(25, 24, 24);
+            color: white;
+            font-weight: bolder;
+
+        }
+
+        .zero {
+            width: 105px;
+            margin-top: 5px;
+
+        }
+
+        @media (max-width:300px) {
+            #calc {
+
+                width: 250px;
+            }
+
+            #keys {
+                gap: 5px;
+            }
+        }
+
+        .firstline {
+            background-color: gray;
+            border-color: gray;
+            color: black;
+        }
+
+        .ops {
+            border-color: rgb(193, 82, 41);
+            background-color: rgb(193, 82, 41);
+            font-weight: bolder;
+        }
+
+        .ops:active {
+            background-color: rgb(238, 190, 102);
+            border-color: rgb(238, 190, 102);
+        }
+
+        .firstline:active {
+            background-color: rgb(191, 186, 186);
+            border-color: rgb(191, 186, 186);
+        }
+
+        .number:active {
+            background-color: rgb(54, 53, 53);
+            transform: translateY(2px);
+            border-color: rgb(54, 53, 5);
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div id="calc">
+
+        <input class="display" readonly>
+        <div id="keys">
+            <button class="firstline" onclick="clearDisplay()">AC</button>
+            <button class="firstline" onclick="appendToDisplay('-')">+/-</button>
+            <button class="firstline" onclick="appendToDisplay('%')">%</button>
+            <button class="ops" onclick="appendToDisplay('/')">/</button>
+            <button class='number' onclick="appendToDisplay('7')">7</button>
+            <button class='number' onclick="appendToDisplay('8')">8</button>
+            <button class='number' onclick="appendToDisplay('9')">9</button>
+            <button class='ops' onclick="appendToDisplay('*')">*</button>
+            <button class='number' onclick="appendToDisplay('4')">4</button>
+            <button class='number' onclick="appendToDisplay('5')">5</button>
+            <button class='number' onclick="appendToDisplay('6')">6</button>
+            <button class='ops' onclick="appendToDisplay('-')">-</button>
+            <button class='number' onclick="appendToDisplay('1')">1</button>
+            <button class='number' onclick="appendToDisplay('2')">2</button>
+            <button class='number' onclick="appendToDisplay('3')">3</button>
+            <button class='ops' onclick="appendToDisplay('+')">+</button>
+        </div>
+        <div class="lastline">
+            <button class='zero ' onclick="appendToDisplay('0')">0</button>
+            <button onclick="appendToDisplay('.')">.</button>
+            <button class='ops' onclick="calculate()">=</button>
+        </div>
+
+    </div>
+    <script>
+        const display = document.querySelector('.display');
+        let hasCalculated = false;
+        let isError = false;
+
+        function appendToDisplay(input) {
+            const lastChar = display.value.slice(-1);
+            const operators = ['+', '-', '*', '/', '%'];
+            const numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
+
+            if (isError) { // Clear error message if there's any input
+                clearDisplay();
+                isError = false;
+            }
+
+            if (hasCalculated && numbers.includes(input)) {
+                clearDisplay();
+                hasCalculated = false;
+            } else if (hasCalculated && operators.includes(input)) {
+                hasCalculated = false;
+            }
+
+            if (operators.includes(lastChar) && operators.includes(input)) {
+                // Replace the last operator with the new one
+                display.value = display.value.slice(0, -1) + input;
+            } else {
+                display.value += input;
+            }
+        }
+
+        function clearDisplay() {
+            display.value = "";
+            hasCalculated = false;
+            isError = false;
+        }
+
+        function toggleSign() {
+            if (display.value) {
+                if (display.value.charAt(0) === '-') {
+                    display.value = display.value.slice(1);
+                } else {
+                    display.value = '-' + display.value;
+                }
+            }
+        }
+
+        function calculate() {
+            try {
+                display.value = eval(display.value);
+                hasCalculated = true;
+            } catch (error) {
+                display.value = 'error';
+                isError = true;
+            }
+        }
+    </script>
+
+</body>
+
+</html>
